@@ -1,0 +1,50 @@
+<!-- ============================================================== -->
+<!-- toggle and nav items -->
+<!-- ============================================================== -->
+<ul class="navbar-nav float-start me-auto">
+  <li class="nav-item">
+    <a
+      class="nav-link waves-effect waves-dark"
+      routerLink="/dashboard/books/list"
+    >
+      Home
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link waves-effect waves-dark" routerLink="/about"> About </a>
+  </li>
+</ul>
+<!-- ============================================================== -->
+<!-- Right side toggle and nav items -->
+<!-- ============================================================== -->
+<ul class="navbar-nav float-end">
+  <!-- ============================================================== -->
+  <!-- User profile and search -->
+  <!-- ============================================================== -->
+  <li class="nav-item" ngbDropdown placement="bottom-end">
+    <a
+      ngbDropdownToggle
+      class="nav-link waves-effect waves-dark pro-pic"
+      routerLink="javascript:void(0)"
+      data-toggle="dropdown"
+      aria-haspopup="true"
+      aria-expanded="false"
+    >
+      <img
+        src="assets/images/users/user4.jpg"
+        alt="user"
+        class="rounded-circle"
+        width="31"
+      />
+      <span class="ms-2">{{ (user?.firstName ?? '-') + " " + (user?.lastName ?? '') }}</span>
+    </a>
+    <div class="dropdown-menu-right" ngbDropdownMenu>
+      <a class="dropdown-item" (click)="showProfile()"> My Profile</a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" style="color: red" (click)="logout()"> Logout</a>
+    </div>
+  </li>
+  <!-- ============================================================== -->
+  <!-- User profile and search -->
+  <!-- ============================================================== -->
+</ul>

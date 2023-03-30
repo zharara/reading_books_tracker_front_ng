@@ -1,0 +1,56 @@
+<div style="margin-bottom: 20px">
+  <button type="button" class="btn btn btn-primary" (click)="addCategory()">
+    + Add New Category
+  </button>
+</div>
+
+<div class="row">
+  <div *ngIf="categories.length == 0">
+    <p>No categoreis</p>
+  </div>
+  
+  <div class="col-md-6 col-lg-3" *ngFor="let category of categories">
+    <div class="card" style="padding: 5px">
+      <div style="display: flex; justify-content: space-between">
+        <div
+          class="card-body"
+          style="cursor: pointer"
+          (click)="showCategoryBooks(category)"
+        >
+          <div class="d-flex align-items-center">
+            <div
+              class="btn btn-lg rounded-circle round round-lg fs-6 d-flex align-items-center justify-content-center bg-light-info text-info"
+            >
+              <i class="bi bi-wallet"></i>
+            </div>
+            <div class="ms-3">
+              <h3 class="mb-0 font-weight-bold">{{ category.name }}</h3>
+            </div>
+          </div>
+        </div>
+        <div class="d-inline-block" ngbDropdown placement="bottom-end">
+          <mat-icon style="cursor: pointer" id="dropdown6" ngbDropdownToggle
+            >more_vert</mat-icon
+          >
+
+          <div ngbDropdownMenu aria-labelledby="dropdown6">
+            <button class="dropdown-item" (click)="updateCategory(category)">
+              Update Category
+            </button>
+            <button class="dropdown-item" (click)="showCategoryBooks(category)">
+              Show Books
+            </button>
+
+            <button
+              class="dropdown-item"
+              style="color: red"
+              (click)="deleteCategory(category)"
+            >
+              Delete Category
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

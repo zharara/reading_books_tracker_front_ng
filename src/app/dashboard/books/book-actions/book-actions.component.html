@@ -1,0 +1,29 @@
+<div class="d-inline-block" ngbDropdown placement="center-end">
+  <button
+    class="btn btn-primary dropdown-toggle-icon-none d-flex align-items-center"
+    id="dropdown6"
+    ngbDropdownToggle
+  >
+    Actions Menu
+    <i class="feather-sm d-flex ms-2" name="chevron-up"></i>
+  </button>
+  <div ngbDropdownMenu aria-labelledby="dropdown6">
+    <button
+      class="dropdown-item"
+      style="color: goldenrod"
+      (click)="setBookReadingPage(book)"
+    >
+      Set Reading Page
+    </button>
+    <button class="dropdown-item" (click)="updateBook(book)">
+      Update Book
+    </button>
+    <button class="dropdown-item" (click)="showBookInfo(book)">
+      Book Info
+    </button>
+
+    <button class="dropdown-item" style="color: red" (click)="deleteBook(book)">
+      Delete Book
+    </button>
+  </div>
+</div>

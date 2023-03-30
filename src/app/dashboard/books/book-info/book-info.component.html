@@ -1,0 +1,25 @@
+<div style="margin-bottom: 20px">
+  <button type="button" class="btn btn btn-primary" (click)="back()">
+    <mat-icon>arrow_back</mat-icon> Back
+  </button>
+</div>
+
+<div class="row">
+  <!-- column -->
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <!-- title -->
+        <h4 class="card-title">{{ book?.title }}</h4>
+        <h4 class="card-subtitle">{{ book?.edition }}</h4>
+        <h4>Author(s): {{ book?.authors }}</h4>
+        <h4>Pages: {{ book?.bookPages }}</h4>
+        <h4>Category: {{ book?.category?.name }}</h4>
+        <h4>Date: {{ (book?.timeCreated) }}</h4>
+        <br />
+        <h4>Book Info</h4>
+        <p>{{ book?.bookInfo }}</p>
+      </div>
+    </div>
+  </div>
+</div>

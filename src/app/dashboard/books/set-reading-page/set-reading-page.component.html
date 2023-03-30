@@ -1,0 +1,45 @@
+<div class="p-4">
+    <header class="d-flex justify-content-between align-items-center">
+      <h1 class="m-0">Set Reading Page</h1>
+      <button mat-flat-button (click)="close()" class="text-danger">
+        <mat-icon>close</mat-icon>
+      </button>
+    </header>
+    <form [formGroup]="setReadingForm">
+      <div class="row mt-3">
+        <div class="col-md-12" style="margin-bottom: 20px; margin-top: 20px;">
+          <p>Book total pages: {{data.bookPages}}</p>
+        </div>
+       
+        <div class="col-md-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Current Reading Page</mat-label>
+            <input matInput min="0" max="{{data.bookPages}}" formControlName="currentReadingPage" type="number" placeholder="# reading page" />
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+  
+    <footer class="tw-p-6" style="margin-top: 30px;">
+      <div class="d-flex justify-content-center align-items-center">
+        
+        <button
+          mat-flat-button
+          class="btn btn-success py-1 px-5 mx-2"
+          (click)="updateReadingPage()"
+          [disabled]="setReadingForm.invalid"
+        >
+          Update
+        </button>
+  
+        <button
+          mat-flat-button
+          class="btn btn-danger py-1 px-5"
+          (click)="close()"
+        >
+          Close
+        </button>
+      </div>
+    </footer>
+  </div>
+  

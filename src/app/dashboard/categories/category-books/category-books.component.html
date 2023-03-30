@@ -1,0 +1,99 @@
+<div style="margin-bottom: 20px">
+  <button type="button" class="btn btn btn-primary" (click)="back()">
+    <mat-icon>arrow_back</mat-icon> Back
+  </button>
+</div>
+
+<div class="row">
+  <div class="col-md-6 col-lg-3">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div
+            class="btn btn-lg rounded-circle round round-lg fs-6 d-flex align-items-center justify-content-center bg-light-info text-info"
+          >
+            <i class="bi bi-wallet"></i>
+          </div>
+          <div class="ms-3">
+            <h3 class="mb-0 font-weight-bold">{{ category?.name }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <!-- column -->
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th class="text-dark font-medium fs-4">Book</th>
+                <th class="text-dark font-medium fs-4">Authors</th>
+                <th class="text-dark font-medium fs-4">Category</th>
+                <th class="text-dark font-medium fs-4">Total Pages</th>
+                <th class="text-dark font-medium fs-4">Reading Page</th>
+                <th class="text-dark font-medium fs-4">Progress</th>
+              </tr>
+            </thead>
+            <tbody>
+              <div *ngIf="books.length == 0">
+                <p>No books</p>
+              </div>
+
+              <tr *ngFor="let book of books">
+                <td>
+                  <div class="d-flex align-items-center">
+                    <mat-icon style="transform: scale(2)">book</mat-icon>
+
+                    <div class="ms-3">
+                      <h4 class="mb-0 font-medium">{{ book.title }}</h4>
+                      <span class="text-muted"
+                        >Edition: {{ book.edition }}</span
+                      >
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <h4 class="mb-0 fw-normal">{{ book.authors }}</h4>
+                </td>
+                <td>
+                  <h4 class="mb-0 fw-normal">{{ book.category.name }}</h4>
+                </td>
+
+                <td>
+                  <h4 class="mb-0 fw-normal">{{ book.bookPages }}</h4>
+                </td>
+                <td>
+                  <h4 class="mb-0 fw-normal">
+                    {{ book.currentReadingPage ?? "-" }}
+                  </h4>
+                </td>
+                <td>
+                  <span
+                    >{{
+                      (
+                        ((book.currentReadingPage ?? 0) / book.bookPages) *
+                        100
+                      ).toFixed(0)
+                    }}%</span
+                  >
+                  <mat-progress-bar
+                    mode="determinate"
+                    value="{{
+                      ((book.currentReadingPage ?? 0) / book.bookPages) * 100
+                    }}"
+                  ></mat-progress-bar>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

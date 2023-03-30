@@ -1,0 +1,105 @@
+<div style="margin-bottom: 20px">
+  <button type="button" class="btn btn btn-primary" (click)="back()">
+    <mat-icon>arrow_back</mat-icon> Back
+  </button>
+</div>
+
+<form
+  class="example-form"
+  style="display: flex; justify-content: center; gap: 10px"
+>
+  <mat-form-field appearance="fill" style="width: 30vw">
+    <mat-label>Search by book title</mat-label>
+    <input matInput (keyup)="searchByBookTitle($event.target)" placeholder="Ex. Java Book" />
+    <mat-icon matPrefix>search</mat-icon>
+  </mat-form-field>
+  <span></span>
+  <mat-form-field appearance="fill" style="width: 30vw">
+    <mat-label>Search by book authors</mat-label>
+    <input matInput (keyup)="searchByAuthor($event.target)" placeholder="Ex. Daniel Liang" />
+    <mat-icon matPrefix>search</mat-icon>
+  </mat-form-field>
+</form>
+
+<div class="row">
+    <!-- column -->
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <!-- title -->
+          <h4 class="card-title">My Books</h4>
+          <h4 class="card-subtitle">List of searched books</h4>
+  
+          <!-- title -->
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <thead>
+                <tr>
+                  <th class="text-dark font-medium fs-4">Book</th>
+                  <th class="text-dark font-medium fs-4">Authors</th>
+                  <th class="text-dark font-medium fs-4">Category</th>
+                  <th class="text-dark font-medium fs-4">Total Pages</th>
+                  <th class="text-dark font-medium fs-4">Reading Page</th>
+                  <th class="text-dark font-medium fs-4">Progress</th>
+                  <th class="text-dark font-medium fs-4">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <div *ngIf="searchedBooks.length == 0">
+                  <p>No books</p>
+                </div>
+                <tr *ngFor="let book of searchedBooks">
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <mat-icon style="transform: scale(2)">book</mat-icon>
+  
+                      <div class="ms-3">
+                        <h4 class="mb-0 font-medium">{{ book.title }}</h4>
+                        <span class="text-muted"
+                          >Edition: {{ book.edition }}</span
+                        >
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <h4 class="mb-0 fw-normal">{{ book.authors }}</h4>
+                  </td>
+                  <td>
+                    <h4 class="mb-0 fw-normal">{{ book.category.name }}</h4>
+                  </td>
+  
+                  <td>
+                    <h4 class="mb-0 fw-normal">{{ book.bookPages }}</h4>
+                  </td>
+                  <td>
+                    <h4 class="mb-0 fw-normal">{{ book.currentReadingPage ?? '-' }}</h4>
+                  </td>
+                  <td>
+                    <span
+                      >{{
+                        (
+                          ((book.currentReadingPage ??0)/ book.bookPages) *
+                          100
+                        ).toFixed(0)
+                      }}%</span
+                    >
+                    <mat-progress-bar
+                      mode="determinate"
+                      value="{{
+                        ((book.currentReadingPage ?? 0) / book.bookPages) * 100
+                      }}"
+                    ></mat-progress-bar>
+                  </td>
+                  <td>
+                    <app-book-actions [book] = "book"></app-book-actions>
+
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

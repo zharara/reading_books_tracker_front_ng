@@ -76,18 +76,11 @@ export class RegisterComponent implements OnInit {
       password: this.registerForm.value.password,
     };
 
-    this.service.register(newUser).subscribe(
-      (res: any) => {
-        localStorage.setItem("auth-token", res.token);
-        localStorage.setItem("user", JSON.stringify(res.user));
-        this.toastr.success("Register Success", "Success");
-        this.router.navigate(["/dashboard/books/list"]);
-      },
-      (error: any) => {
-        console.log(error.error.message);
-
-        this.toastr.error(error.error.message, "Auth Faild");
-      }
-    );
+    this.service.register(newUser).subscribe((res: any) => {
+      localStorage.setItem("auth-token", res.token);
+      localStorage.setItem("user", JSON.stringify(res.user));
+      this.toastr.success("Register Success", "Success");
+      this.router.navigate(["/dashboard/books/list"]);
+    });
   }
 }

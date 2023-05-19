@@ -44,11 +44,6 @@ export class LoginComponent implements OnInit {
         localStorage.setItem("user", JSON.stringify(res.user));
         this.toastr.success("Login Success", "Success");
         this.router.navigate(["/dashboard/books/list"]);
-      },
-      (error: any) => {
-        console.log(error.error.message);
-
-        this.toastr.error(error.error.message, "Auth Faild");
       }
     );
   }

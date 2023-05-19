@@ -1,10 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { Book, Books } from "../../data/books-data";
+import { Book } from "../../models/book";
 import { MatDialog } from "@angular/material/dialog";
 import { AddBookComponent } from "../add-book/add-book.component";
 import { BookService } from "../services/book.service";
-import { SetReadingPageComponent } from "../set-reading-page/set-reading-page.component";
-import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-list-books",
@@ -14,18 +12,19 @@ import { ToastrService } from "ngx-toastr";
 export class ListBooksComponent implements OnInit {
   books: Book[] = [];
 
-  constructor(public dialog: MatDialog,
-    private toastr: ToastrService,
-    private service: BookService) {
+  constructor(
+    public dialog: MatDialog,
+    private service: BookService
+  ) {
     this.getBooksDataFromSubject();
   }
 
   ngOnInit(): void {
-    this.getBooks();
+    this.getBooksFromServer();
   }
 
-  getBooks() {
-    this.service.getBooksData();
+  getBooksFromServer() {
+    this.service.reloadBooksFromServer();
   }
 
   getBooksDataFromSubject() {
@@ -43,7 +42,7 @@ export class ListBooksComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result == true) {
-        this.getBooks();
+        this.getBooksFromServer();
       }
     });
   }

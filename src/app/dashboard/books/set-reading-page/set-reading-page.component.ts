@@ -6,7 +6,7 @@ import {
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
 import { ConfirmationComponent } from "../../shared/components/confirmation/confirmation.component";
-import { Book, Books } from "../../data/books-data";
+import { CreateOrUpdateBook } from "../../models/book";
 import { BookService } from "../services/book.service";
 import { ToastrService } from "ngx-toastr";
 
@@ -25,7 +25,7 @@ export class SetReadingPageComponent implements OnInit {
     public dialog: MatDialogRef<SetReadingPageComponent>,
     public matDialog: MatDialog,
     private service: BookService,
-    private toastr: ToastrService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -44,12 +44,24 @@ export class SetReadingPageComponent implements OnInit {
   }
 
   updateReadingPage() {
-    let book = this.data;
-    book.currentReadingPage = this.setReadingForm.value.currentReadingPage;
-    
-    this.service.updateBook(book, this.data.id);
-    this.toastr.success("Updated Reading Page Succesfully", "Success");
-    this.dialog.close(true);
+    let updateBook: CreateOrUpdateBook = {
+      user: this.data.user._id,
+      title: this.data.title,
+      authors: this.data.authors,
+      edition: this.data.edition,
+      category: this.data.category._id,
+      bookPages: this.data.bookPages,
+      bookInfo: this.data.bookInfo,
+      currentReadingPage: this.setReadingForm.value.currentReadingPage,
+    };
+
+    console.log(updateBook);
+
+    this.service.updateBook(updateBook, this.data._id).subscribe((res: any) => {
+      this.service.updateLocally(res);
+      this.toastr.success("Updated Reading Page Succesfully", "Success");
+      this.dialog.close(true);
+    });
   }
 
   close() {
@@ -67,6 +79,7 @@ export class SetReadingPageComponent implements OnInit {
 
       dialogRef.afterClosed().subscribe((result) => {
         if (result == true) {
+          //
         }
       });
     } else {

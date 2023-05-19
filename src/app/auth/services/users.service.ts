@@ -1,23 +1,20 @@
 import { Injectable } from "@angular/core";
-import { User, Users } from "../../dashboard/data/users-data";
+import { User } from "../../dashboard/models/user";
+import { HttpClient } from "@angular/common/http";
+import { environment } from "../../../environments/environment";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root",
 })
 export class UsersService {
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
-  login(credentials: any): User | null {
-    let foundUser = Users.filter(
-      (u) => u.email == credentials.email && u.password == credentials.password
-    );
-
-    return foundUser[0];
+  login(credentials: any): Observable<Object> {
+    return this.http.post(environment.baseApi + "/auth/login", credentials);
   }
 
-  register(user: User): User | null {
-    Users.push(user);
-
-    return user;
+  register(user: any): Observable<Object> {
+    return this.http.post(environment.baseApi + "/auth/register", user);
   }
 }

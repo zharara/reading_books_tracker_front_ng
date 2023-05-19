@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { BookService } from "../../books/services/book.service";
-import { Book } from "../../data/books-data";
-import { Category } from "../../data/categories-data";
+import { Book } from "../../models/book";
+import { Category } from "../../models/category";
 import { Location } from "@angular/common";
 
 @Component({
@@ -11,17 +11,18 @@ import { Location } from "@angular/common";
   styleUrls: ["./category-books.component.scss"],
 })
 export class CategoryBooksComponent implements OnInit {
-  category: Category | null = null;
+  category: Category;
   books: Book[] = [];
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private _location: Location,
     private service: BookService
-  ) {}
+  ) {
+    this.category = JSON.parse(this.activatedRoute.snapshot.params.category);
+  }
 
   ngOnInit(): void {
-    this.category = JSON.parse(this.activatedRoute.snapshot.params.category);
     this.getBooks();
   }
 
@@ -30,6 +31,8 @@ export class CategoryBooksComponent implements OnInit {
   }
 
   getBooks() {
-    this.books = this.service.getBooksOfCategory(this.category?.id);
+    this.service.getBooksOfCategory(this.category._id).subscribe((res: any) => {
+      this.books = res;
+    });
   }
 }

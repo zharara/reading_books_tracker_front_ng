@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { AddCategoryComponent } from "../add-category/add-category.component";
-import { Categories, Category } from "../../data/categories-data";
+import { Category } from "../../models/category";
 import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { CategoryService } from "../services/category.service";
@@ -11,7 +11,7 @@ import { CategoryService } from "../services/category.service";
   templateUrl: "./list-categories.component.html",
 })
 export class ListCategoriesComponent implements OnInit {
-  categories: Category[];
+  categories: Category[] = [];
 
   constructor(
     private router: Router,
@@ -19,13 +19,21 @@ export class ListCategoriesComponent implements OnInit {
     private toastr: ToastrService,
     private service: CategoryService
   ) {
-    this.categories = Categories;
+    this.getCategoriesDataFromSubject();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getCategoriesFromServer();
+  }
 
-  getBooks() {
-    this.service.getAllCategories();
+  getCategoriesFromServer() {
+    this.service.reloadCategoriesFromServer();
+  }
+
+  getCategoriesDataFromSubject() {
+    this.service.bookCategoriesData.subscribe((res: any) => {
+      this.categories = res.data;
+    });
   }
 
   addCategory(): void {
@@ -37,7 +45,7 @@ export class ListCategoriesComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result == true) {
-        // this.getAllTasks()
+        //
       }
     });
   }
@@ -59,13 +67,15 @@ export class ListCategoriesComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result == true) {
-        this.getBooks();
+        //
       }
     });
   }
 
   deleteCategory(category: any) {
-    this.service.deleteCategory(category.id);
-    this.toastr.success("Category Deleted Succesfully", "Success");
+    this.service.deleteCategory(category._id).subscribe((res: any) => {
+      this.service.deleteLocally(res);
+      this.toastr.success("Category Deleted Succesfully", "Success");
+    });
   }
 }

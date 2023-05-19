@@ -33,19 +33,23 @@ export class LoginComponent implements OnInit {
           Validators.maxLength(20),
         ],
       ],
-      rememberMe: [true],
+      // rememberMe: [true],
     });
   }
 
   login() {
-    let user = this.service.login(this.loginForm.value);
-    if (user != null) {
-      localStorage.setItem("auth-token", "token-xyz");
-      localStorage.setItem("user", JSON.stringify(user));
-      this.toastr.success("Login Success", "Success");
-      this.router.navigate(["/dashboard/books/list"]);
-    } else {
-      this.toastr.error("Invalid email or password!", "Auth Faild");
-    }
+    this.service.login(this.loginForm.value).subscribe(
+      (res: any) => {
+        localStorage.setItem("auth-token", res.token);
+        localStorage.setItem("user", JSON.stringify(res.user));
+        this.toastr.success("Login Success", "Success");
+        this.router.navigate(["/dashboard/books/list"]);
+      },
+      (error: any) => {
+        console.log(error.error.message);
+
+        this.toastr.error(error.error.message, "Auth Faild");
+      }
+    );
   }
 }

@@ -6,10 +6,11 @@ import {
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
 import { ConfirmationComponent } from "../../shared/components/confirmation/confirmation.component";
-import { Categories, Category } from "../../data/categories-data";
+import { Category } from "../../models/category";
 import { BookService } from "../services/book.service";
 import { ToastrService } from "ngx-toastr";
 import { CategoryService } from "../../categories/services/category.service";
+import { CreateOrUpdateBook } from "../../../../app/dashboard/models/book";
 
 @Component({
   selector: "app-add-book",
@@ -28,9 +29,11 @@ export class AddBookComponent implements OnInit {
     public matDialog: MatDialog,
     private service: BookService,
     private toastr: ToastrService,
-    private categoryService: CategoryService
+    categoryService: CategoryService
   ) {
-    this.categories = categoryService.getAllCategories(null);
+    categoryService.getAllCategories().subscribe((res: any) => {
+      this.categories = res;
+    });
   }
 
   ngOnInit(): void {
@@ -39,8 +42,7 @@ export class AddBookComponent implements OnInit {
 
   createForm() {
     this.newBookForm = this.fb.group({
-      id: [this.data?.id || 20],
-      timeCreated: [this.data?.timeCreated || new Date()],
+      user: this.data?.user._id || "",
       title: [
         this.data?.title || "",
         [Validators.required, Validators.minLength(2)],
@@ -50,9 +52,9 @@ export class AddBookComponent implements OnInit {
         [Validators.required, Validators.minLength(2)],
       ],
       edition: [this.data?.edition || "", [Validators.required]],
-      category: [this.data?.category || "", Validators.required, ],
+      category: [this.data?.category._id || "", Validators.required],
       bookInfo: [this.data?.bookInfo || ""],
-      bookPages: [this.data?.bookPages || "", Validators.required,],
+      bookPages: [this.data?.bookPages || "", Validators.required],
       currentReadingPage: [this.data?.currentReadingPage || 0],
     });
 
@@ -60,15 +62,23 @@ export class AddBookComponent implements OnInit {
   }
 
   createBook() {
-    this.service.createBook(this.newBookForm.value);
-    this.toastr.success("Book Created Succesfully", "Success");
-    this.dialog.close(true);
+    var createBook: CreateOrUpdateBook = this.newBookForm.value;
+    createBook.user = JSON.parse(localStorage.getItem("user") ?? "{}")?._id ?? "";
+
+    this.service.createBook(createBook).subscribe((res: any) => {
+      this.service.addLocally(res);
+      this.toastr.success("Book Created Succesfully", "Success");
+      this.dialog.close(true);
+    });
   }
 
   updateBook() {
-    this.service.updateBook(this.newBookForm.value, this.data.id);
-    this.toastr.success("Book Updated Succesfully", "Success");
-    this.dialog.close(true);
+    var updateBook: CreateOrUpdateBook = this.newBookForm.value;
+    this.service.updateBook(updateBook, this.data._id).subscribe((res: any) => {
+      this.service.updateLocally(res);
+      this.toastr.success("Book Updated Succesfully", "Success");
+      this.dialog.close(true);
+    });
   }
 
   close() {

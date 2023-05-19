@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
-import { Book, Books } from "../../data/books-data";
+import { Book } from "../../models/book";
 import { BookService } from "../services/book.service";
-import {Location} from '@angular/common';
+import { Location } from "@angular/common";
 
 @Component({
   selector: "app-search-books",
@@ -9,7 +9,7 @@ import {Location} from '@angular/common';
   styleUrls: ["./search-books.component.scss"],
 })
 export class SearchBooksComponent implements OnInit {
-  searchedBooks: Book[];
+  searchedBooks: Book[] = [];
   filteration: any = {
     searchByBookTitle: "",
     searchByBookAuthors: "",
@@ -18,7 +18,9 @@ export class SearchBooksComponent implements OnInit {
   timeOutId: any;
 
   constructor(private service: BookService, private _location: Location) {
-    this.searchedBooks = Books;
+    // this.service.booksData.subscribe((res: any) => {
+    //   this.searchedBooks = res.data;
+    // });
   }
 
   ngOnInit(): void {}
@@ -28,10 +30,11 @@ export class SearchBooksComponent implements OnInit {
   }
 
   searchBooks() {
-    var newBooks = this.service.getAllBooks(this.filteration);
-    console.log(newBooks);
-
-    this.searchedBooks = newBooks;
+    this.service.getAllBooks(this.filteration).subscribe((res: any) => {
+      console.log(res);
+      
+      this.searchedBooks = res;
+    });
   }
 
   searchByBookTitle(event: any) {

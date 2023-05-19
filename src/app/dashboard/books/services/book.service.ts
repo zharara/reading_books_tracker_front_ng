@@ -1,86 +1,114 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
-import { Book, Books } from "../../data/books-data";
+import { BehaviorSubject, Observable } from "rxjs";
+import { Book, CreateOrUpdateBook } from "../../models/book";
+import { environment } from "../../../../environments/environment";
+import { HttpClient } from "@angular/common/http";
 
 @Injectable({
   providedIn: "root",
 })
 export class BookService {
-  booksData = new BehaviorSubject({});
+  booksData = new BehaviorSubject<{
+    data: Book[];
+    totalCount: number;
+  }>({
+    data: [],
+    totalCount: 0,
+  });
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
-  sort(list: Book[]): Book[] {
-    return list.sort((n1, n2) => {
-      if (n1.timeCreated.getMilliseconds > n2.timeCreated.getMilliseconds) {
-        return 1;
+  reloadBooksFromServer(filter?: any) {
+    this.getAllBooks(filter).subscribe(
+      (res: any) => {
+        console.log(res);
+
+        this.booksData.next({
+          data: res,
+          totalCount: res.length,
+        });
+      },
+      (error: any) => {
+        console.log(error.status);
+        console.log(error.error);
       }
-
-      if (n1.timeCreated.getMilliseconds < n2.timeCreated.getMilliseconds) {
-        return -1;
-      }
-
-      return 0;
-    });
+    );
   }
 
-  getBooksData() {
-    this.booksData.next({
-      data: this.sort(Books),
-      totalCount: Books.length,
-    });
-  }
+  getAllBooks(filter?: any): Observable<Object> {
+    var filterQuery: string = "";
 
-  getAllBooks(filter?: any): Book[] {
-    var titleKeyword: string | null = filter?.searchByBookTitle;
-    var authorsKeyword: string | null = filter?.searchByBookAuthors;
+    if (filter?.searchByBookTitle != null && filter?.searchByBookTitle != "") {
+      filterQuery = filterQuery + "?titleKeyword=" + filter?.searchByBookTitle;
 
-    if (
-      (titleKeyword == "" || titleKeyword == null) &&
-      (authorsKeyword == "" || authorsKeyword == null)
+      if (
+        filter?.searchByBookAuthors != null &&
+        filter?.searchByBookAuthors != ""
+      ) {
+        filterQuery =
+          filterQuery + "&authorsKeyword=" + filter?.searchByBookAuthors;
+      }
+    } else if (
+      filter?.searchByBookAuthors != null &&
+      filter?.searchByBookAuthors != ""
     ) {
-      return this.sort(Books);
+      filterQuery =
+        filterQuery + "?authorsKeyword=" + filter?.searchByBookAuthors;
     }
 
-    var searchBooks: Book[] = [];
-
-    if (titleKeyword != "" && titleKeyword != null) {
-      searchBooks.push(
-        ...Books.filter((b: Book) =>
-          b.title.toLowerCase().includes(titleKeyword?.toLowerCase() ?? "")
-        )
-      );
-    }
-
-    if (authorsKeyword != "" && authorsKeyword != null) {
-      searchBooks.push(
-        ...Books.filter((b: Book) =>
-          b.authors.toLowerCase().includes(authorsKeyword?.toLowerCase() ?? "")
-        )
-      );
-    }
-
-    return this.sort(searchBooks);
+    return this.http.get(environment.baseApi + "/books/get-all" + filterQuery);
   }
 
-  getBooksOfCategory(id: any) {
-    return this.sort(Books.filter((b: Book) => b.category.id == id));
+  getBooksOfCategory(categoryId: string): Observable<Object> {
+    return this.http.get(
+      environment.baseApi + "/books/get-books-of-category/" + categoryId
+    );
   }
 
-  createBook(model: Book) {
-    return Books.push(model);
+  createBook(createBook: CreateOrUpdateBook): Observable<Object> {
+    return this.http.post(environment.baseApi + "/books/create", createBook);
   }
 
-  updateBook(model: Book, id: number) {
-    var index = Books.findIndex((b: Book) => b.id == id);
+  addLocally(res: Book) {
+    var newData: Book[] = this.booksData.value.data;
+    var newLength = newData.push(res);
 
-    Books[index] = model;
-
-    return index;
+    this.booksData.next({
+      data: newData,
+      totalCount: newLength,
+    });
   }
 
-  deleteBook(id: number) {
-    var index = Books.findIndex((b: Book) => b.id == id);
-    Books.splice(index, 1);
+  updateBook(toUpdateBook: CreateOrUpdateBook, id: string): Observable<Object> {
+    return this.http.put(
+      environment.baseApi + "/books/update/" + id,
+      toUpdateBook
+    );
+  }
+
+  updateLocally(res: Book) {
+    var newData: Book[] = this.booksData.value.data;
+    var index = newData.findIndex((b: Book) => b._id == res._id);
+    newData[index] = res;
+
+    this.booksData.next({
+      data: newData,
+      totalCount: newData.length,
+    });
+  }
+
+  deleteBook(id: string): Observable<Object> {
+    return this.http.delete(environment.baseApi + "/books/delete/" + id);
+  }
+
+  deleteLocally(res: Book) {
+    var newData: Book[] = this.booksData.value.data;
+    var index = newData.findIndex((b: Book) => b._id == res._id);
+    newData.splice(index, 1);
+
+    this.booksData.next({
+      data: newData,
+      totalCount: newData.length,
+    });
   }
 }

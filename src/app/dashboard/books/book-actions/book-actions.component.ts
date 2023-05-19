@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { Book } from "../../data/books-data";
+import { Book } from "../../models/book";
 import { ToastrService } from "ngx-toastr";
 import { AddBookComponent } from "../add-book/add-book.component";
 import { BookService } from "../services/book.service";
@@ -13,21 +13,17 @@ import { Router } from "@angular/router";
   styleUrls: ["./book-actions.component.scss"],
 })
 export class BookActionsComponent implements OnInit {
-  @Input() book: Book ;
+  @Input() book: Book;
   constructor(
     public dialog: MatDialog,
     private toastr: ToastrService,
     private service: BookService,
     private router: Router
   ) {
-    this.book = Object()
+    this.book = Object();
   }
 
   ngOnInit(): void {}
-
-  getBooks() {
-    this.service.getBooksData();
-  }
 
   updateBook(book: any) {
     const dialogRef = this.dialog.open(AddBookComponent, {
@@ -39,7 +35,7 @@ export class BookActionsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result == true) {
-        this.getBooks();
+        // 
       }
     });
   }
@@ -61,13 +57,15 @@ export class BookActionsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result == true) {
-        this.getBooks();
+        // 
       }
     });
   }
 
   deleteBook(book: any) {
-    this.service.deleteBook(book.id);
-    this.toastr.success("Book Deleted Succesfully", "Success");
+    this.service.deleteBook(book._id).subscribe((res: any) => {
+      this.service.deleteLocally(res);
+      this.toastr.success("Book Deleted Succesfully", "Success");
+    });
   }
 }

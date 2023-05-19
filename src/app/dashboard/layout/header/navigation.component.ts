@@ -1,7 +1,7 @@
 import { Component, AfterViewInit, EventEmitter, Output } from "@angular/core";
 import { Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { User } from "../../data/users-data";
+import { User } from "../../models/user";
 import { PerfectScrollbarConfigInterface } from "ngx-perfect-scrollbar";
 import { SidebarComponent } from "../sidebar/sidebar.component";
 

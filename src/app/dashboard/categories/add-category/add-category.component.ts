@@ -34,8 +34,11 @@ export class AddCategoryComponent implements OnInit {
 
   createForm() {
     this.newCategoryForm = this.fb.group({
-      id: [this.data?.id || 20],
-      userId: [this.data?.userId || 1],
+      user: [
+        this.data?.user._id ||
+          JSON.parse(localStorage.getItem("user") ?? "{}")?._id ||
+          "",
+      ],
       name: [
         this.data?.name || "",
         [Validators.required, Validators.minLength(2)],
@@ -46,15 +49,23 @@ export class AddCategoryComponent implements OnInit {
   }
 
   createCategory() {
-    this.service.createCategory(this.newCategoryForm.value);
-    this.toastr.success("Category Created Succesfully", "Success");
-    this.dialog.close(true);
+    this.service
+      .createCategory(this.newCategoryForm.value)
+      .subscribe((res: any) => {
+        this.service.addLocally(res);
+        this.toastr.success("Category Created Succesfully", "Success");
+        this.dialog.close(true);
+      });
   }
 
   updateCategory() {
-    this.service.updateCategory(this.newCategoryForm.value, this.data.id);
-    this.toastr.success("Category Updated Succesfully", "Success");
-    this.dialog.close(true);
+    this.service
+      .updateCategory(this.newCategoryForm.value, this.data._id)
+      .subscribe((res: any) => {
+        this.service.updateLocally(res);
+        this.toastr.success("Category Updated Succesfully", "Success");
+        this.dialog.close(true);
+      });
   }
 
   close() {
@@ -72,6 +83,7 @@ export class AddCategoryComponent implements OnInit {
 
       dialogRef.afterClosed().subscribe((result) => {
         if (result == true) {
+          //
         }
       });
     } else {

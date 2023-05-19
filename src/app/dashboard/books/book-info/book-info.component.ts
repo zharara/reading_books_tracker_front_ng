@@ -1,17 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import {Location} from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
-import { Book } from '../../data/books-data';
+import { Component, OnInit } from "@angular/core";
+import { Location } from "@angular/common";
+import { ActivatedRoute } from "@angular/router";
+import { Book } from "../../models/book";
 
 @Component({
-  selector: 'app-book-info',
-  templateUrl: './book-info.component.html',
-  styleUrls: ['./book-info.component.scss']
+  selector: "app-book-info",
+  templateUrl: "./book-info.component.html",
+  styleUrls: ["./book-info.component.scss"],
 })
 export class BookInfoComponent implements OnInit {
   book: Book | null = null;
 
-  constructor(private _location: Location, private activatedRoute:ActivatedRoute) { }
+  constructor(
+    private _location: Location,
+    private activatedRoute: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
     this.book = JSON.parse(this.activatedRoute.snapshot.params.book);
